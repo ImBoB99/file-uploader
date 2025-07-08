@@ -18,6 +18,7 @@
   "homepage": "https://github.com/ImBoB99/file-uploader#readme",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.11.1",
     "@quixo3/prisma-session-store": "^3.1.13",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.1.0",
