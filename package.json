@@ -18,6 +18,7 @@
   "homepage": "https://github.com/ImBoB99/file-uploader#readme",
   "description": "",
   "dependencies": {
+    "@quixo3/prisma-session-store": "^3.1.13",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.1.0",
     "ejs": "^3.1.10",
@@ -26,5 +27,8 @@
     "express-validator": "^7.2.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.11.1"
   }
 }
