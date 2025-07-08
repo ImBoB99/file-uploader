@@ -1,7 +1,7 @@
 {
   "name": "file-uploader",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,15 @@
     "url": "https://github.com/ImBoB99/file-uploader/issues"
   },
   "homepage": "https://github.com/ImBoB99/file-uploader#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.1.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
 }
