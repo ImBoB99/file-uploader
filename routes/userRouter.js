@@ -1,12 +1,25 @@
 const {Router} = require("express")
 const userController = require("../controllers/userController")
 const userRouter = Router();
+const passport = require("passport")
+const { signupValidation } = require("../middleware/userSignupValidation");
 
-userRouter.get("/register", userController.getRegister) //TODO:
-userRouter.post("/register", userController.postRegister) //TODO:
-userRouter.get("/login", userController.getLogin) //TODO:
-// userRouter.post("/login", ) //TODO: passport.authenticate
-// userRouter.post("/logout", ) //TODO: req.logout
+userRouter.get("/register", userController.getRegister)
+userRouter.post("/register", signupValidation, userController.postRegister)
+userRouter.get("/login", userController.getLogin)
+userRouter.post("/login", passport.authenticate("local", {
+  successRedirect: "/login",
+  failureRedirect: "/login"
+}))
+userRouter.post("/logout", (req, res, next) => {
+  req.logout((error) => {
+    if (error) {
+      return next(error)
+    }
+
+    res.redirect("/login")
+  })
+})
  
 
 

@@ -6,6 +6,10 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('./generated/prisma');
 const indexRouter = require("./routes/indexRouter");
 const userRouter = require("./routes/userRouter");
+const passport = require("passport");
+
+// Need to require the entire Passport config module so app.js knows about it
+require("./config/passport");
 
 const app = express();
 
@@ -28,6 +32,8 @@ app.use(
   })
 );
 
+app.use(passport.session())
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,7 +43,6 @@ app.set("view engine", "ejs");
 // globally set the currentUser variable so every ejs view has access
 app.use((req, res, next) => {
   res.locals.currentUser = req.user || null;
-  console.log(res.locals)
   next();
 })
 

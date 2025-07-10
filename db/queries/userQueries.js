@@ -15,10 +15,30 @@ const addUserToDb = async (username, email, password) => {
       username: username,
       email: email,
       password: password,
-    }
-  })
+    },
+  });
 
   return user;
-}
+};
 
-module.exports = {getAllUsers, addUserToDb}
+const getUserByEmail = async (email) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      email: email,
+    },
+  });
+
+  return user;
+};
+
+const getUserById = async (id) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  return user;
+};
+
+module.exports = { getAllUsers, addUserToDb, getUserByEmail, getUserById };
