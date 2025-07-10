@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Signup</title>
+  </head>
+  <body>
+    <% if (locals.currentUser) { %>
+    <h2>You are already logged in!</h2>
+    <a href="/">Go back to homepage</a>
+    <% } else { %>
+    <h1>User Signup Page</h1>
+
+    <form
+      action="/register"
+      method="post"
+      style="
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 300px;
+        margin-bottom: 2rem;
+      "
+    >
+      <input type="text" name="username" id="username" placeholder="Username" />
+      <input type="email" name="email" id="email" placeholder="Email" />
+      <input
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Your Password"
+        autocomplete="off"
+      />
+      <input
+        type="password"
+        name="confirmPassword"
+        id="confirmPassword"
+        placeholder="Confirm Your Password"
+        autocomplete="off"
+      />
+      <button type="submit">Submit</button>
+    </form>
+
+    <a href="/">Go back to homepage</a>
+    <a href="/login">Go Login</a>
+    <% } %>
+  </body>
+</html>

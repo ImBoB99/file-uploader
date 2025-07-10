@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Log In</title>
+  </head>
+  <body>
+    <% if (locals.currentUser) {%>
+    <h1>WELCOME BACK <%= currentUser.username %></h1>
+
+    <form action="/logout" method="POST" style="display: inline">
+      <button type="submit">LOG OUT</button>
+    </form>
+
+    <% } else { %>
+    <h1>please log in</h1>
+    <form
+      action="/login"
+      method="POST"
+      style="
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 300px;
+        margin-bottom: 2rem;
+      "
+    >
+      <label for="username">Username</label>
+      <input id="username" name="username" placeholder="Username" type="text" />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" placeholder="Password" />
+      <button type="submit">Log In</button>
+    </form>
+    <%}%>
+
+    <a href="/">Go Home</a>
+  </body>
+</html>
