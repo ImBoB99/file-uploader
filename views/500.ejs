@@ -2,7 +2,9 @@
 <html>
 <head><title>Server Error</title></head>
 <body>
-  <h1>500 - Internal Server Error</h1>
-  <p>Sorry, something went wrong on our side.</p>
+  <h1>Error <%= statusCode %></h1>
+  <p><%= error.message %></p>
+
+  <p>Sorry, something went wrong.</p>
 </body>
 </html>
