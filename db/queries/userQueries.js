@@ -1,6 +1,4 @@
-const { PrismaClient } = require("../../generated/prisma");
-
-const prisma = new PrismaClient();
+const prisma = require("../prismaClient");
 
 const getAllUsers = async () => {
   const allUsers = await prisma.user.findMany();
@@ -9,8 +7,8 @@ const getAllUsers = async () => {
   return allUsers;
 };
 
-const addUserToDb = async (username, email, password) => {
-  const user = await prisma.user.create({
+const addUserToDb = async (username, email, password, prismaClient = prisma) => {
+  const user = await prismaClient.user.create({
     data: {
       username: username,
       email: email,

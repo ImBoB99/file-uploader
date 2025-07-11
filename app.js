@@ -3,11 +3,11 @@ const express = require("express");
 const path = require("node:path");
 const session = require("express-session");
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
-const { PrismaClient } = require('./generated/prisma');
 const indexRouter = require("./routes/indexRouter");
 const userRouter = require("./routes/userRouter");
 const passport = require("passport");
 const { notFoundHandler, globalErrorHandler } = require("./middleware/errorHandler");
+const prisma = require("./db/prismaClient")
 
 // Need to require the entire Passport config module so app.js knows about it
 require("./config/passport");
@@ -23,7 +23,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     store: new PrismaSessionStore(
-      new PrismaClient(),
+      prisma,
       {
         checkPeriod: 2 * 60 * 1000,  //ms
         dbRecordIdIsSessionId: true,

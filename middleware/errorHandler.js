@@ -1,9 +1,12 @@
 const notFoundHandler = (req, res, next) => {
+  if (req.path === "/.well-known/appspecific/com.chrome.devtools.json") {
+    return res.status(204).send();
+  }
+
   const err = new Error("Page Not Found");
   err.statusCode = 404;
   next(err); // Pass it to global error handler
 };
-
 
 const globalErrorHandler = (err, req, res, next) => {
   console.error(err.stack);
