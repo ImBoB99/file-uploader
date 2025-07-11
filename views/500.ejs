@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head><title>Server Error</title></head>
-<body>
-  <h1>Error <%= statusCode %></h1>
-  <p><%= error.message %></p>
+  <head>
+    <%- include('layout/head') %>
+    <title>Server Error</title>
+  </head>
+  <body>
+    <%- include('layout/header') %>
+    <h1>Error <%= statusCode %></h1>
+    <p><%= error.message %></p>
 
-  <p>Sorry, something went wrong.</p>
-</body>
+    <p>Sorry, something went wrong.</p>
+    <%- include('layout/footer') %>
+  </body>
 </html>

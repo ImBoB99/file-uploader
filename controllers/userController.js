@@ -30,4 +30,14 @@ const getLogin = (req, res) => {
   res.render("login");
 };
 
-module.exports = { getRegister, postRegister, getLogin };
+const getUpload = (req, res) => {
+  res.render("upload")
+}
+
+const postUpload = (req, res) => {
+  console.log("Posting upload...")
+  console.log(req.file, req.body)
+  res.redirect("/upload")
+}
+
+module.exports = { getRegister, postRegister, getLogin, getUpload, postUpload };

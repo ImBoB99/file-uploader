@@ -1,0 +1,20 @@
+body {
+  font-family: Ubuntu, system-ui;
+  background-color: #101010;
+  color: #fbf7f7
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5rem;
+}
+
+a, header button {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  margin: 8px;
+  font-family: Ubuntu, system-ui;
+}

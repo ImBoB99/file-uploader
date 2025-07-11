@@ -1,0 +1,25 @@
+<header>
+  <% if (currentUser) {%>
+  <h1>Logged in as <%= currentUser.username %></h1>
+  <nav>
+    <a href="/upload">Upload</a>
+    <form action="/logout" method="POST" style="display: inline">
+      <button
+        type="submit"
+        style="
+          background: none;
+          border: none;
+          cursor: pointer;
+        "
+      >
+        Logout
+      </button>
+    </form>
+  </nav>
+  <% } else { %>
+  <nav>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+  </nav>
+  <% } %>
+</header>
