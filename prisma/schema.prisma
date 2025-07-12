@@ -15,10 +15,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
   username String
   password String
+  folders  Folder[]
+  files    File[]
 }
 
 model Session {
@@ -26,4 +28,32 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String   @db.VarChar(30)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  files     File[]
+
+  parentFolder   Folder?  @relation("Subfolders", fields: [parentFolderId], references: [id])
+  parentFolderId Int?
+  subfolders     Folder[] @relation("Subfolders")
+
+  @@unique([userId, name, parentFolderId]) // folder name must be unique
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  folderId  Int
+  path      String // e.g., /uploads/userId/folderId/file.ext
+  mimetype  String // e.g., image/png
+  size      Int // in bytes
 }
