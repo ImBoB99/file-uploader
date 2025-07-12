@@ -42,7 +42,7 @@ model Folder {
   parentFolderId Int?
   subfolders     Folder[] @relation("Subfolders")
 
-  @@unique([userId, name, parentFolderId]) // folder name must be unique
+  @@unique([userId, name, parentFolderId]) // folder name must be unique in the current directory
 }
 
 model File {
@@ -53,7 +53,7 @@ model File {
   userId    Int
   folder    Folder   @relation(fields: [folderId], references: [id])
   folderId  Int
-  path      String // e.g., /uploads/userId/folderId/file.ext
+  path      String // e.g., /folders/folderId/file.ext
   mimetype  String // e.g., image/png
   size      Int // in bytes
 }

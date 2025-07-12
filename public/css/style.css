@@ -30,4 +30,5 @@ a, header button {
   background-color: #353535;
   border-radius: 4px;
   padding: 4px 12px;
+  margin-block: 0.5rem;
 }
