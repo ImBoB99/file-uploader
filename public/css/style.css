@@ -18,3 +18,16 @@ a, header button {
   margin: 8px;
   font-family: Ubuntu, system-ui;
 }
+
+.folders-actions {
+  margin-block: 1rem;
+}
+
+.folder {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #353535;
+  border-radius: 4px;
+  padding: 4px 12px;
+}
