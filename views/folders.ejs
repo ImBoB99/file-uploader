@@ -16,13 +16,12 @@
     </div>
     <div class="folders-container">
       <% if (foldersData.length > 0) { %> <% foldersData.forEach(folder => { %>
-      <div class="folder">
+      <a href="/folders/<%= [...pathArray, folder.id].join("/") %>" class="folder">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
           fill="currentColor"
-          class="bi bi-folder"
           viewBox="0 0 16 16"
           part="svg"
         >
@@ -32,7 +31,7 @@
         </svg>
         <p><%= folder.name %></p>
         <p><%= folder.createdAt.toLocaleString() %></p>
-      </div>
+      </a>
       <% }) %> <% } %>
     </div>
   </body>

@@ -18,7 +18,7 @@ async function main() {
 
   const userID = user.id.toString();
   const userRootFolderPath = path.join(__dirname, "public/uploads", userID);
-  const newFolderName = "test 2";
+  const newFolderName = "test 1 nested";
   const newFolderPath = path.join(userRootFolderPath, newFolderName);
 
   try {
@@ -33,7 +33,7 @@ async function main() {
         where: {
           name: newFolderName,
           userId: user.id,
-          parentFolderId: null, // adjust if using nested folders
+          parentFolderId: 1, // adjust if using nested folders
         },
       });
 
@@ -47,7 +47,7 @@ async function main() {
         data: {
           name: newFolderName,
           userId: user.id,
-          parentFolderId: null,
+          parentFolderId: 1,
         },
       });
 

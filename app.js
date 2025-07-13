@@ -51,7 +51,7 @@ app.set("view engine", "ejs");
 
 app.use("/", indexRouter);
 app.use("/", userRouter);
-app.use("/", foldersRouter);
+app.use("/folders", foldersRouter);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
