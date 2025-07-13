@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('layout/head') %>
-    <title>Homepage</title>
+    <title>Folders</title>
   </head>
   <body>
     <h1><%= currentUser.username %>'s Folders</h1>
+    <h2>Folder: <%= locals.currentFolder ? currentFolder.name : 'Root' %></h2>
 
     <div class="folders-actions">
       <button>New Folder</button>

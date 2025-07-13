@@ -5,7 +5,7 @@ const getFoldersRoot = async (req, res) => {
 
   console.log(req.user)
 
-  const userId = req.user.id;
+  const userId = Number(req.user.id);
 
   const rootFolderContents = await prisma.folder.findMany({
     where: {
@@ -23,4 +23,39 @@ const getFoldersRoot = async (req, res) => {
   res.render("folders", {foldersData: rootFolderContents})
 }
 
-module.exports = { getFoldersRoot }
+const getFolderById = async (req, res) => {
+  console.log("Getting folder by id")
+
+  const userId = Number(req.user.id);
+  const folderId = Number(req.params.folderId);
+
+  const folder = await prisma.folder.findUnique({
+    where: {
+      userId: userId,
+      id: folderId,
+    }
+  })
+
+  if (!folder) {
+    const error = new Error("Folder not found");
+    error.status = 404;
+    return next(error)
+  }
+
+  const folderContents = await prisma.folder.findMany({
+    where: {
+      userId: userId,
+      parentFolderId: folderId
+    },
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+    }
+  })
+
+  console.log(folderContents)
+  res.render("folders", {foldersData: folderContents, currentFolder: folder})
+}
+
+module.exports = { getFoldersRoot, getFolderById }
