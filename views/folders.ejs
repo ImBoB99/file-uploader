@@ -11,12 +11,12 @@
     <h2>Folder: <%= locals.currentFolder ? currentFolder.name : 'Root' %></h2>
 
     <div class="folders-actions">
-      <button>New Folder</button>
+      <button id="addNewFolder">New Folder</button>
       <button>New File</button>
     </div>
     <div class="folders-container">
       <% if (foldersData.length > 0) { %> <% foldersData.forEach(folder => { %>
-      <a href="/folders/<%= [...pathArray, folder.id].join("/") %>" class="folder">
+      <a href="/folders/<%= path ? path + "/" : "" %><%= folder.id %>" class="folder">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -34,5 +34,47 @@
       </a>
       <% }) %> <% } %>
     </div>
+
+    <dialog id="newFolderDialog">
+      <h2>New Folder</h2>
+      <form id="newFolderForm" action="/folders/new-folder" method="post">
+        <input type="text" name="folderName" id="folderName" maxlength="30" />
+        <input
+          type="hidden"
+          name="folderId"
+          value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>"
+        />
+        <button type="submit">Create Folder</button>
+      </form>
+      <svg
+        id="exitDialogBtn"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="dialog-exit-icon"
+        viewBox="0 0 16 16"
+        part="svg"
+      >
+        <path
+          d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+        ></path>
+      </svg>
+    </dialog>
   </body>
 </html>
+
+<script>
+  const newFolderBtn = document.querySelector("#addNewFolder");
+  const newFolderDialog = document.querySelector("#newFolderDialog");
+  const newFolderForm = document.querySelector("#newFolderForm");
+  const exitDialogBtn = document.querySelector("#exitDialogBtn");
+
+  newFolderBtn.addEventListener("click", () => {
+    newFolderDialog.show();
+  });
+
+  exitDialogBtn.addEventListener("click", () => {
+    newFolderDialog.close();
+  });
+</script>

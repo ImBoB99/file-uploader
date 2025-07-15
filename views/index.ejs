@@ -12,14 +12,6 @@
 
 
   <h1>Home Page</h1>
-  <% if (users) { %>
-    <h1>All Users</h1>
-
-    <% users.forEach(user => { %>
-      <h3>Username: <%= user.username %></h3>
-      <h3>Email: <%= user.email %></h3>
-   <% }) %>
-  <%}%>
 
   <%- include('layout/footer') %>
 
