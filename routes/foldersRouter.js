@@ -3,9 +3,13 @@ const foldersController = require("../controllers/foldersController")
 const foldersRouter = Router();
 const { isAuth } = require("../middleware/authMiddleware")
 
+const multer = require("multer")
+const upload = multer({ storage: multer.memoryStorage() })
+
 foldersRouter.get("/", isAuth, foldersController.getFolderRoot)
 foldersRouter.get("/*folderId", isAuth, foldersController.getFolderById)
 
 foldersRouter.post("/new-folder", isAuth, foldersController.postNewFolder)
+foldersRouter.post("/upload", isAuth, upload.single('file'), foldersController.postNewFile)
 
 module.exports = foldersRouter;

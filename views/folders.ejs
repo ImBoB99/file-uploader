@@ -12,7 +12,7 @@
 
     <div class="folders-actions">
       <button id="addNewFolder">New Folder</button>
-      <button>New File</button>
+      <button id="addNewFile">New File</button>
     </div>
     <div class="folders-container">
       <% if (foldersData.length > 0) { %> <% foldersData.forEach(folder => { %>
@@ -61,6 +61,32 @@
         ></path>
       </svg>
     </dialog>
+        <dialog id="newFileDialog">
+      <h2>New File</h2>
+    <form id="newFileForm" action="/folders/upload" method="post" enctype="multipart/form-data">
+        <input
+          type="hidden"
+          name="folderId"
+          value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>"
+        />
+      <input type="file" name="file" id="file">
+      <button type="submit">Submit</button>
+    </form>
+      <svg
+        id="exitDialogBtn"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="dialog-exit-icon"
+        viewBox="0 0 16 16"
+        part="svg"
+      >
+        <path
+          d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+        ></path>
+      </svg>
+    </dialog>
   </body>
 </html>
 
@@ -68,13 +94,28 @@
   const newFolderBtn = document.querySelector("#addNewFolder");
   const newFolderDialog = document.querySelector("#newFolderDialog");
   const newFolderForm = document.querySelector("#newFolderForm");
-  const exitDialogBtn = document.querySelector("#exitDialogBtn");
 
-  newFolderBtn.addEventListener("click", () => {
-    newFolderDialog.show();
+  const newFileBtn = document.querySelector("#addNewFile");
+  const newFileDialog = document.querySelector("#newFileDialog");
+  const newFileForm = document.querySelector("#newFileForm");
+
+  const exitDialogBtn = document.querySelectorAll(".dialog-exit-icon");
+
+  [newFolderBtn, newFileBtn].forEach(button => {
+    button.addEventListener("click", () => {
+      if (button === newFolderBtn) {
+        newFolderDialog.showModal();
+      } else if (button === newFileBtn) {
+        newFileDialog.showModal();
+      }
+    });
   });
 
-  exitDialogBtn.addEventListener("click", () => {
-    newFolderDialog.close();
+  exitDialogBtn.forEach(button => {
+    button.addEventListener("click", () => {
+      if (newFolderDialog.open) newFolderDialog.close();
+      if (newFileDialog.open) newFileDialog.close();
+    });
   });
+
 </script>

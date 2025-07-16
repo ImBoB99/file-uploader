@@ -51,9 +51,9 @@ model File {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  folder    Folder   @relation(fields: [folderId], references: [id])
-  folderId  Int
-  path      String // e.g., /folders/folderId/file.ext
-  mimetype  String // e.g., image/png
-  size      Int // in bytes
+  folder    Folder?  @relation(fields: [folderId], references: [id])
+  folderId  Int?
+  path      String
+  mimetype  String
+  size      Int
 }

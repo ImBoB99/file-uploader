@@ -40,7 +40,7 @@ const getFolderById = async (req, res, next) => {
 };
 
 const postNewFolder = async (req, res, next) => {
-  
+
   const userId = Number(req.user.id);
   let { folderName, folderId } = req.body;
 
@@ -94,4 +94,68 @@ const postNewFolder = async (req, res, next) => {
   res.redirect(idPath ? `/folders/${idPath}` : "/folders");
 };
 
-module.exports = { getFolderRoot, getFolderById, postNewFolder };
+const postNewFile = async (req, res, next) => {
+  console.log("Uploading...")
+  const userId = Number(req.user.id);
+  const file = req.file;
+
+  if (!file) return res.status(400).send("No file uploaded");
+
+  let { folderId } = req.body;
+
+
+  folderId = folderId === "root" ? null : Number(folderId);
+  const currentFolder = await db.getUniqueFolderById(userId, folderId);
+
+  if (folderId !== null && !currentFolder) {
+    const error = new Error("Folder not found");
+    error.status = 404;
+    return next(error);
+  }
+
+  const segments = await getFolderPathSegments(currentFolder, userId, db.getUniqueFolderById);
+  const { absolutePath, idPath } = buildPathsFromSegments(segments, userId);
+
+  console.log(userId, file)
+
+  const fileName = Date.now() + "-" + file.originalname;
+  const filePath = path.join(absolutePath, fileName); // eg. /home/user/.../uploads/15
+  const relativePath = '/' + absolutePath.split('uploads/')[1]; // → "/15"
+
+  console.log(`File Name: ${fileName}`)
+  console.log(`File Path: ${filePath}`)
+  console.log(`File Relative Path: ${relativePath}`)
+
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      try {
+        fs.writeFileSync(filePath, file.buffer)
+      } catch (error) {
+        console.log(error)
+      }
+
+      const dbFile = await tx.file.create({
+        data: {
+          filename: file.originalname,
+          userId: userId,
+          folderId: folderId || null,
+          path: relativePath + "/" + fileName,
+          mimetype: file.mimetype,
+          size: file.size,
+        }
+      })
+
+      console.log(dbFile)
+    })
+
+
+    res.redirect(idPath ? `/folders/${idPath}` : "/folders");
+  } catch (error) {
+    console.error("Upload failed: ", error)
+    return next(error)
+  }
+
+}
+
+module.exports = { getFolderRoot, getFolderById, postNewFolder, postNewFile };
