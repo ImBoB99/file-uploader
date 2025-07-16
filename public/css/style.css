@@ -33,7 +33,17 @@ a, header button {
   margin-block: 0.5rem;
 }
 
-#newFolderDialog {
+.file {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #3f3e4c;
+  border-radius: 4px;
+  padding: 4px 12px;
+  margin-block: 0.5rem;
+}
+
+#newFolderDialog, #newFileDialog {
   padding: 1rem;
   background-color: grey;
   position: relative;

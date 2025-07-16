@@ -9,6 +9,7 @@ const getFolderRoot = async (req, res) => {
   const userId = Number(req.user.id);
 
   const rootFolderContents = await db.getFolderContents(userId, null);
+  console.log(rootFolderContents)
 
   res.render("folders", { foldersData: rootFolderContents, currentFolder: "root", path: "" });
 };
