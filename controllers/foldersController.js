@@ -5,7 +5,6 @@ const db = require("../db/queries/folderQueries");
 const { getFolderPathSegments, buildPathsFromSegments } = require("../helpers/folderHelpers");
 
 const getFolderRoot = async (req, res) => {
-  console.log("Getting root folder");
 
   const userId = Number(req.user.id);
 
@@ -15,13 +14,10 @@ const getFolderRoot = async (req, res) => {
 };
 
 const getFolderById = async (req, res, next) => {
-  console.log("Getting folder by id");
 
   const userId = Number(req.user.id);
   const params = req.params.folderId;
   const folderId = Number(params[params.length - 1]);
-
-  console.log("Target folder ID:", folderId);
 
   const currentFolder = await db.getUniqueFolderById(userId, folderId);
 
@@ -35,7 +31,6 @@ const getFolderById = async (req, res, next) => {
   const segments = await getFolderPathSegments(currentFolder, userId, db.getUniqueFolderById);
   const { idPath } = buildPathsFromSegments(segments, userId);
 
-  console.log(idPath);
 
   res.render("folders", {
     foldersData: folderContents,
@@ -45,11 +40,10 @@ const getFolderById = async (req, res, next) => {
 };
 
 const postNewFolder = async (req, res, next) => {
-  console.log("Make new folder");
+  
   const userId = Number(req.user.id);
   let { folderName, folderId } = req.body;
 
-  console.log(userId, folderName, folderId);
 
   folderId = folderId === "root" ? null : Number(folderId);
   const currentFolder = await db.getUniqueFolderById(userId, folderId);
@@ -65,7 +59,6 @@ const postNewFolder = async (req, res, next) => {
 
   const folderPath = path.join(absolutePath, folderName);
 
-  console.log(folderPath);
   try {
     await prisma.$transaction(async (tx) => {
       if (!fs.existsSync(folderPath)) {
@@ -93,13 +86,11 @@ const postNewFolder = async (req, res, next) => {
         },
       });
 
-      console.log("New folder created:", newFolder);
     });
   } catch (error) {
     console.error("Error during transaction:", error);
   }
 
-  console.log(absolutePath);
   res.redirect(idPath ? `/folders/${idPath}` : "/folders");
 };
 
