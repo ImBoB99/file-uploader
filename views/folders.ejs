@@ -36,7 +36,7 @@
     </div>
     <div class="files-container">
       <% if (foldersData.files.length > 0) { %> <% foldersData.files.forEach(file => { %>
-      <a href="/folders/<%= (path ? path + '/' : '') + file.id + '/' + file.filename %>" class="file">
+      <a href="#" class="file" data-file-id="<%= file.id %>">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" part="svg">
           <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
         </svg>
@@ -72,7 +72,7 @@
         ></path>
       </svg>
     </dialog>
-        <dialog id="newFileDialog">
+    <dialog id="newFileDialog">
       <h2>New File</h2>
     <form id="newFileForm" action="/folders/upload" method="post" enctype="multipart/form-data">
         <input
@@ -97,6 +97,33 @@
           d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
         ></path>
       </svg>
+    </dialog>
+    <dialog id="fileDetailsDialog">
+    <h2>File Details</h2>
+    <div id="fileDetailsContent">
+      <p><strong>Filename:</strong> <span id="detailFilename"></span></p>
+      <p><strong>Size:</strong> <span id="detailSize"></span></p>
+      <p><strong>Mimetype:</strong> <span id="detailMimetype"></span></p>
+      <p><strong>Uploaded:</strong> <span id="detailCreatedAt"></span></p>
+
+      <a id="downloadBtn" href="#" download>
+        <button>Download</button>
+      </a>
+    </div>
+    <svg
+      id="exitFileDialogBtn"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      class="dialog-exit-icon"
+      viewBox="0 0 16 16"
+      part="svg"
+    >
+      <path
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+      ></path>
+    </svg>
     </dialog>
   </body>
 </html>
@@ -127,6 +154,45 @@
       if (newFolderDialog.open) newFolderDialog.close();
       if (newFileDialog.open) newFileDialog.close();
     });
+  });
+
+  const fileLinks = document.querySelectorAll(".file");
+  const fileDialog = document.querySelector("#fileDetailsDialog");
+  const exitFileDialogBtn = document.querySelector("#exitFileDialogBtn");
+
+  const detailFilename = document.querySelector("#detailFilename");
+  const detailSize = document.querySelector("#detailSize");
+  const detailMimetype = document.querySelector("#detailMimetype");
+  const detailCreatedAt = document.querySelector("#detailCreatedAt");
+
+  fileLinks.forEach(link => {
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const fileId = link.getAttribute("data-file-id");
+
+      try {
+        const res = await fetch(`/folders/file/${fileId}`);
+        if (!res.ok) throw new Error("Failed to load file details");
+
+        const file = await res.json();
+
+        detailFilename.textContent = file.filename;
+        detailSize.textContent = `${file.size} bytes`;
+        detailMimetype.textContent = file.mimetype;
+        detailCreatedAt.textContent = new Date(file.createdAt).toLocaleString();
+
+        downloadBtn.href = `/folders/download/${fileId}`;
+
+        fileDialog.showModal();
+      } catch (err) {
+        console.error(err);
+        alert("Could not load file details.");
+      }
+    });
+  });
+
+  exitFileDialogBtn.addEventListener("click", () => {
+    if (fileDialog.open) fileDialog.close();
   });
 
 </script>

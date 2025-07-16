@@ -47,4 +47,23 @@ const getUniqueFolderById = async (userId, folderId) => {
   return folder;
 };
 
-module.exports = { getFolderContents, getUniqueFolderById};
+const getFileDetailsById = async (userId, fileId) => {
+    const file = await prisma.file.findUnique({
+    where: {
+      userId: userId,
+      id: fileId,
+    },
+    select: {
+      filename: true,
+      createdAt: true,
+      id: true,
+      mimetype: true,
+      size: true,
+      path: true,
+    },
+  });
+
+  return file;
+}
+
+module.exports = { getFolderContents, getUniqueFolderById, getFileDetailsById};

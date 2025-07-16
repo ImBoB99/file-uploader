@@ -2,7 +2,6 @@
   <% if (currentUser) {%>
   <h1>Logged in as <%= currentUser.username %></h1>
   <nav>
-    <a href="/upload">Upload</a>
     <a href="/folders">Folders</a>
     <form action="/logout" method="POST" style="display: inline">
       <button
