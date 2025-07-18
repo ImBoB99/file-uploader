@@ -1,6 +1,7 @@
 const prisma = require("../db/prismaClient");
 const path = require("node:path");
 const fs = require("node:fs");
+const fsp = fs.promises;
 const db = require("../db/queries/folderQueries");
 const { getFolderPathSegments, buildPathsFromSegments } = require("../helpers/folderHelpers");
 
@@ -8,7 +9,6 @@ const getFolderRoot = async (req, res) => {
   const userId = Number(req.user.id);
 
   const rootFolderContents = await db.getFolderContents(userId, null);
-  console.log(rootFolderContents);
 
   res.render("folders", { foldersData: rootFolderContents, currentFolder: "root", path: "" });
 };
@@ -90,7 +90,6 @@ const postNewFolder = async (req, res, next) => {
 };
 
 const postNewFile = async (req, res, next) => {
-  console.log("Uploading...");
   const userId = Number(req.user.id);
   const file = req.file;
 
@@ -109,8 +108,6 @@ const postNewFile = async (req, res, next) => {
 
   const segments = await getFolderPathSegments(currentFolder, userId, db.getUniqueFolderById);
   const { absolutePath, idPath } = buildPathsFromSegments(segments, userId);
-
-  console.log(userId, file);
 
   const fileName = Date.now() + "-" + file.originalname;
   const filePath = path.join(absolutePath, fileName); // eg. /home/user/.../uploads/15
@@ -171,13 +168,48 @@ const downloadFileById = async (req, res, next) => {
   const file = await db.getFileDetailsById(userId, fileId);
   if (!file) return res.status(404).send("File not found");
 
-  console.log(file)
-
-  // You probably stored the file buffer in memory or saved it on disk — adjust this accordingly
-  const filePath = path.join(__dirname, "../public/uploads", file.path); // update path if needed
-  console.log(filePath)
+  const filePath = path.join(__dirname, "../public/uploads", file.path);
+  console.log(filePath);
   res.download(filePath, file.filename);
 };
 
+const postDeleteFile = async (req, res, next) => {
+  const userId = Number(req.user.id);
+  const fileId = Number(req.params.fileId);
 
-module.exports = { getFolderRoot, getFolderById, postNewFolder, postNewFile, getFileById, downloadFileById };
+  const file = await db.getFileDetailsById(userId, fileId);
+  console.log(file)
+  if (!file) return res.status(404).send("File not found");
+
+  try {
+    const deletedFile = await prisma.$transaction(async (tx) => {
+      return await tx.file.delete({
+        where: {
+          userId: userId,
+          id: fileId,
+        },
+      });
+    });
+
+    const filePath = path.join(__dirname, "../public/uploads", deletedFile.path);
+    await fsp.rm(filePath);
+    console.log("File Removed");
+    
+  } catch (error) {
+    return next(error);
+  }
+
+  // redirect to referring page or root folder
+  res.redirect(req.get('Referer') || '/folders');
+
+};
+
+module.exports = {
+  getFolderRoot,
+  getFolderById,
+  postNewFolder,
+  postNewFile,
+  getFileById,
+  downloadFileById,
+  postDeleteFile,
+};

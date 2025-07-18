@@ -1,7 +1,7 @@
 body {
   font-family: Ubuntu, system-ui;
   background-color: #101010;
-  color: #fbf7f7
+  color: #fbf7f7;
 }
 
 header {
@@ -11,7 +11,8 @@ header {
   gap: 5rem;
 }
 
-a, header button {
+a,
+header button {
   color: white;
   text-decoration: none;
   font-size: 1.5rem;
@@ -35,6 +36,7 @@ a, header button {
 
 .file {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 1rem;
   background-color: #3f3e4c;
@@ -43,7 +45,15 @@ a, header button {
   margin-block: 0.5rem;
 }
 
-#newFolderDialog, #newFileDialog {
+a.file-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+#newFolderDialog,
+#newFileDialog {
   padding: 1rem;
   background-color: grey;
   position: relative;
