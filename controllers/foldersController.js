@@ -178,7 +178,7 @@ const postDeleteFile = async (req, res, next) => {
   const fileId = Number(req.params.fileId);
 
   const file = await db.getFileDetailsById(userId, fileId);
-  console.log(file)
+  console.log(file);
   if (!file) return res.status(404).send("File not found");
 
   try {
@@ -194,14 +194,230 @@ const postDeleteFile = async (req, res, next) => {
     const filePath = path.join(__dirname, "../public/uploads", deletedFile.path);
     await fsp.rm(filePath);
     console.log("File Removed");
-    
   } catch (error) {
     return next(error);
   }
 
   // redirect to referring page or root folder
-  res.redirect(req.get('Referer') || '/folders');
+  res.redirect(req.get("Referer") || "/folders");
+};
 
+const postDeleteFolder = async (req, res, next) => {
+  const userId = Number(req.user.id);
+  const folderId = Number(req.params.folderId);
+
+  try {
+    console.log(`User Id: ${userId}, Folder Id to be deleted: ${folderId}`);
+
+    // CASE 1. Folder has no subfolders or files
+    // CASE 2. Folder has no subfolders but has files
+    // CASE 3. Folder has subfolders but no files
+    // CASE 4. Folder has subfolders and files
+
+    const subfolders = await prisma.folder.findMany({
+      where: {
+        userId: userId,
+        parentFolderId: folderId,
+      },
+    });
+
+    const files = await prisma.file.findMany({
+      where: {
+        userId: userId,
+        folderId: folderId,
+      },
+    });
+
+    console.log(`Subfolders from DB:`, subfolders);
+    console.log(`Files in folder:`, files);
+
+    // CASE 1
+    if (subfolders.length === 0 && files.length === 0) {
+      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
+      console.log(`Folder ${folderId} has no subfolders or files, deletion...`);
+      //TODO: replace findUnique with delete
+      const deletedFolder = await prisma.folder.findUnique({
+        where: {
+          userId: userId,
+          id: folderId,
+        },
+      });
+
+      const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+      const { absolutePath } = buildPathsFromSegments(segments, userId);
+      //TODO: await fsp.rm(absolutePath);
+
+      console.log("Deleted folder: ", deletedFolder);
+      console.log(`Folder ${folderId} path on disc is ${absolutePath}`);
+    }
+
+    //CASE 2
+    if (subfolders.length === 0 && files.length > 0) {
+      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
+      console.log(
+        `Folder ${folderId} has no subfolders but has files, deleting files before folder...`,
+      );
+
+      //TODO: replace findMany with deleteMany
+      const deletedFiles = await prisma.file.findMany({
+        where: {
+          userId: userId,
+          folderId: folderId,
+        },
+      });
+
+      for (const file of deletedFiles) {
+        const basePath = "../public/uploads";
+        const filePath = file.path;
+        const absolutePath = path.join(__dirname, basePath, filePath);
+        console.log(`Deleting file at absPath: ${absolutePath}`);
+        //TODO: await fsp.unlink(absolutePath); // eventually
+      }
+
+      const deletedFolder = await prisma.folder.findUnique({
+        where: {
+          userId: userId,
+          id: folderId,
+        },
+      });
+
+      const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+      const { absolutePath } = buildPathsFromSegments(segments, userId);
+      //TODO: await fsp.rm(absolutePath);
+
+      console.log("Deleted folder: ", deletedFolder);
+      console.log(`Folder ${folderId} path on disc is ${absolutePath}`);
+    }
+
+    // CASE 3
+    if (subfolders.length > 0 && files.length === 0) {
+      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
+      console.log(
+        `Folder ${folderId} has subfolders but no files, deleting subfolders before folder...`,
+      );
+
+      const foldersToDelete = new Set();
+      const queue = [folderId];
+
+      while (queue.length > 0) {
+        const id = queue.shift();
+
+        if (!foldersToDelete.has(id)) {
+          console.log(id);
+          foldersToDelete.add(id);
+
+          const subfolders = await prisma.folder.findMany({
+            where: {
+              userId: userId,
+              parentFolderId: id,
+            },
+          });
+
+          subfolders.forEach((subfolder) => {
+            if (!foldersToDelete.has(subfolder.id)) {
+              queue.push(subfolder.id);
+            }
+          });
+        }
+      }
+
+      console.log(`Folder ids for deletion: `, foldersToDelete);
+
+      const reversedForDeletion = [...foldersToDelete].reverse();
+
+      console.log(`Reversed folder ids for deletion: `, reversedForDeletion);
+      for (const id of reversedForDeletion) {
+        //TODO: replace findUnique with delete
+        const folder = await prisma.folder.findUnique({
+          where: {
+            userId: userId,
+            id: id,
+          },
+        });
+
+        const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+        const { absolutePath } = buildPathsFromSegments(segments, userId);
+        console.log(`Folder path for deletion:`, absolutePath);
+        //TODO: await fsp.rm(absolutePath);
+      }
+    }
+
+    // CASE 4
+    if (subfolders.length > 0 && files.length > 0) {
+      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
+      console.log(
+        `Folder ${folderId} has subfolders and files, deleting subfolders and files before folder...`,
+      );
+
+      const foldersToDelete = new Set();
+      const queue = [folderId];
+
+      while (queue.length > 0) {
+        const id = queue.shift();
+
+        if (!foldersToDelete.has(id)) {
+          console.log(id);
+          foldersToDelete.add(id);
+
+          const subfolders = await prisma.folder.findMany({
+            where: {
+              userId: userId,
+              parentFolderId: id,
+            },
+          });
+
+          subfolders.forEach((subfolder) => {
+            if (!foldersToDelete.has(subfolder.id)) {
+              queue.push(subfolder.id);
+            }
+          });
+        }
+      }
+
+      console.log(`Folder ids for deletion: `, foldersToDelete);
+
+      const reversedForDeletion = [...foldersToDelete].reverse();
+
+      console.log(`Reversed folder ids for deletion: `, reversedForDeletion);
+      for (const id of reversedForDeletion) {
+        //TODO: replace findUnique with delete
+        const folder = await prisma.folder.findUnique({
+          where: {
+            userId: userId,
+            id: id,
+          },
+        });
+
+        //TODO: replace findMany with deleteMany
+        const currentFolderFiles = await prisma.file.findMany({
+          where: {
+            userId: userId,
+            folderId: id,
+          },
+        });
+
+        for (const file of currentFolderFiles) {
+          const basePath = "../public/uploads";
+          const filePath = file.path;
+          const absolutePath = path.join(__dirname, basePath, filePath);
+
+          console.log(`Deleting ${folder.name}'s file at absPath: ${absolutePath}`);
+          //TODO: await fsp.rm(absolutePath);
+        }
+
+        const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+        const { absolutePath } = buildPathsFromSegments(segments, userId);
+        console.log(`Folder path for deletion:`, absolutePath);
+        console.log("Current folder's files: ", currentFolderFiles);
+        //TODO: await fsp.rm(absolutePath);
+      }
+    }
+
+    res.redirect(req.get("Referer") || "/folders");
+  } catch (error) {
+    console.error("Failed to delete folder:", error);
+    return next(error);
+  }
 };
 
 module.exports = {
@@ -212,4 +428,5 @@ module.exports = {
   getFileById,
   downloadFileById,
   postDeleteFile,
+  postDeleteFolder,
 };

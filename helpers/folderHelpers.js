@@ -22,4 +22,5 @@ const buildPathsFromSegments = (segments, userId) => {
   return { absolutePath, idPath: ids };
 };
 
+
 module.exports = { getFolderPathSegments, buildPathsFromSegments };

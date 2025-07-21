@@ -10,7 +10,8 @@ foldersRouter.get("/", isAuth, foldersController.getFolderRoot)
 
 foldersRouter.post("/new-folder", isAuth, foldersController.postNewFolder)
 foldersRouter.post("/upload", isAuth, upload.single('file'), foldersController.postNewFile)
-foldersRouter.post("/delete/:fileId", isAuth, foldersController.postDeleteFile)
+foldersRouter.post("/delete/file/:fileId", isAuth, foldersController.postDeleteFile)
+foldersRouter.post("/delete/folder/:folderId", isAuth, foldersController.postDeleteFolder)
 
 foldersRouter.get("/file/*fileId", isAuth, foldersController.getFileById)
 foldersRouter.get("/download/:fileId", isAuth, foldersController.downloadFileById);

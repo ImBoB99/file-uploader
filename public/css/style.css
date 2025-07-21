@@ -27,6 +27,7 @@ header button {
 .folder {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   background-color: #353535;
   border-radius: 4px;
@@ -34,7 +35,7 @@ header button {
   margin-block: 0.5rem;
 }
 
-.file {
+.file{
   display: flex;
   flex-direction: row;
   align-items: center;

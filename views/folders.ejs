@@ -1,114 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('layout/head') %>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%- include('layout/head') %>
     <title>Folders</title>
-  </head>
-  <body>
-    <h1><%= currentUser.username %>'s Folders</h1>
-    <h2>Folder: <%= locals.currentFolder ? currentFolder.name : 'Root' %></h2>
+</head>
 
-    <div class="folders-actions">
-      <button id="addNewFolder">New Folder</button>
-      <button id="addNewFile">New File</button>
-    </div>
-    <div class="folders-container">
-      <% if (foldersData.folders.length > 0) { %> <% foldersData.folders.forEach(folder => { %>
-      <a href="/folders/<%= path ? path + "/" : "" %><%= folder.id %>" class="folder">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-          part="svg"
-        >
-          <path
-            d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"
-          ></path>
-        </svg>
-        <p><%= folder.name %></p>
-        <p><%= folder.createdAt.toLocaleString() %></p>
-      </a>
-      <% }) %> <% } %>
-    </div>
-    <div class="files-container">
-      <% if (foldersData.files.length > 0) { %>
-        <% foldersData.files.forEach(file => { %>
-          <div class="file" data-file-id="<%= file.id %>">
-            <a href="#" class="file-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" part="svg">
-                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
+<body>
+  <h1>
+    <%= currentUser.username %>'s Folders
+  </h1>
+  <h2>Folder: <%= locals.currentFolder ? currentFolder.name : 'Root' %>
+  </h2>
+
+  <div class="folders-actions">
+    <button id="addNewFolder">New Folder</button>
+    <button id="addNewFile">New File</button>
+  </div>
+  <div class="folders-container">
+    <% if (foldersData.folders.length> 0) { %> <% foldersData.folders.forEach(folder=> { %>
+        <div class="folder" data-folder-id="<%= folder.id %>">
+          <a href="/folders/<%= path ? path + "/" : "" %><%= folder.id %>" class="folder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+                part="svg">
+                <path
+                  d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z">
+                </path>
               </svg>
-              <p><%= file.filename %></p>
-              <p><%= file.createdAt.toLocaleString() %></p>
-            </a>
+              <p>
+                <%= folder.name %>
+              </p>
+              <p>
+                <%= folder.createdAt.toLocaleString() %>
+              </p>
+          </a>
 
-            <!-- Delete Button -->
-            <form action="/folders/delete/<%= file.id %>" method="POST" class="delete-form" style="display:inline;">
-              <button type="submit" class="delete-file-btn" data-file-id="<%= file.id %>">Delete</button>
-            </form>
-          </div>
+          <!-- Delete Button -->
+          <form action="/folders/delete/folder/<%= folder.id %>" method="POST" class="delete-form" style="display:inline;">
+            <button type="submit" class="delete-folder-btn" data-folder-id="<%= folder.id %>">Delete</button>
+          </form>
+        </div>
         <% }) %>
-      <% } %>
-    </div>
+          <% } %>
+  </div>
+  <div class="files-container">
+    <% if (foldersData.files.length> 0) { %>
+      <% foldersData.files.forEach(file=> { %>
+        <div class="file" data-file-id="<%= file.id %>">
+          <a href="#" class="file-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+              part="svg">
+              <path
+                d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z">
+              </path>
+            </svg>
+            <p>
+              <%= file.filename %>
+            </p>
+            <p>
+              <%= file.createdAt.toLocaleString() %>
+            </p>
+          </a>
+
+          <!-- Delete Button -->
+          <form action="/folders/delete/file/<%= file.id %>" method="POST" class="delete-form" style="display:inline;">
+            <button type="submit" class="delete-file-btn" data-file-id="<%= file.id %>">Delete</button>
+          </form>
+        </div>
+        <% }) %>
+          <% } %>
+  </div>
 
 
-    <dialog id="newFolderDialog">
-      <h2>New Folder</h2>
-      <form id="newFolderForm" action="/folders/new-folder" method="post">
-        <input type="text" name="folderName" id="folderName" maxlength="30" />
-        <input
-          type="hidden"
-          name="folderId"
-          value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>"
-        />
-        <button type="submit">Create Folder</button>
-      </form>
-      <svg
-        id="exitDialogBtn"
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        class="dialog-exit-icon"
-        viewBox="0 0 16 16"
-        part="svg"
-      >
-        <path
-          d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
-        ></path>
-      </svg>
-    </dialog>
-    <dialog id="newFileDialog">
-      <h2>New File</h2>
+  <dialog id="newFolderDialog">
+    <h2>New Folder</h2>
+    <form id="newFolderForm" action="/folders/new-folder" method="post">
+      <input type="text" name="folderName" id="folderName" maxlength="30" />
+      <input type="hidden" name="folderId" value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>" />
+      <button type="submit">Create Folder</button>
+    </form>
+    <svg id="exitDialogBtn" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+      class="dialog-exit-icon" viewBox="0 0 16 16" part="svg">
+      <path
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z">
+      </path>
+    </svg>
+  </dialog>
+  <dialog id="newFileDialog">
+    <h2>New File</h2>
     <form id="newFileForm" action="/folders/upload" method="post" enctype="multipart/form-data">
-        <input
-          type="hidden"
-          name="folderId"
-          value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>"
-        />
+      <input type="hidden" name="folderId" value="<%= locals.currentFolder.id ? currentFolder.id : 'root' %>" />
       <input type="file" name="file" id="file">
       <button type="submit">Submit</button>
     </form>
-      <svg
-        id="exitDialogBtn"
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        class="dialog-exit-icon"
-        viewBox="0 0 16 16"
-        part="svg"
-      >
-        <path
-          d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
-        ></path>
-      </svg>
-    </dialog>
-    <dialog id="fileDetailsDialog">
+    <svg id="exitDialogBtn" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+      class="dialog-exit-icon" viewBox="0 0 16 16" part="svg">
+      <path
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z">
+      </path>
+    </svg>
+  </dialog>
+  <dialog id="fileDetailsDialog">
     <h2>File Details</h2>
     <div id="fileDetailsContent">
       <p><strong>Filename:</strong> <span id="detailFilename"></span></p>
@@ -120,22 +114,15 @@
         <button>Download</button>
       </a>
     </div>
-    <svg
-      id="exitFileDialogBtn"
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      class="dialog-exit-icon"
-      viewBox="0 0 16 16"
-      part="svg"
-    >
+    <svg id="exitFileDialogBtn" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+      class="dialog-exit-icon" viewBox="0 0 16 16" part="svg">
       <path
-        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
-      ></path>
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z">
+      </path>
     </svg>
-    </dialog>
-  </body>
+  </dialog>
+</body>
+
 </html>
 
 <script>

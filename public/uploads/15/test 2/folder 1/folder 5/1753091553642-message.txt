@@ -1,0 +1,179 @@
+{
+        "id": 1593133799,
+        "class_name": "ability_afterburn",
+        "name": "Afterburn",
+        "start_trained": false,
+        "image": "https://assets.deadlock-api.com/images/abilities/inferno_deflect_psd.png",
+        "image_webp": "https://assets.deadlock-api.com/images/abilities/inferno_deflect_psd.webp",
+        "hero": 1,
+        "update_time": 1678311042,
+        "properties": {
+            "AbilityCastDelay": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "cast",
+                "disable_value": "0"
+            },
+            "AbilityCastRange": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "range",
+                "display_units": "EDisplayUnit_Meters"
+            },
+            "AbilityChannelTime": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "cast",
+                "disable_value": "0"
+            },
+            "AbilityCharges": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "cast",
+                "disable_value": "0"
+            },
+            "AbilityCooldown": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "cooldown",
+                "disable_value": "0"
+            },
+            "AbilityCooldownBetweenCharge": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "charge_cooldown",
+                "disable_value": "0"
+            },
+            "AbilityDuration": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "duration",
+                "disable_value": "0"
+            },
+            "AbilityPostCastDuration": {
+                "value": "0",
+                "disable_value": "0"
+            },
+            "AbilityResourceCost": {
+                "value": "0",
+                "can_set_token_override": true,
+                "css_class": "cast",
+                "disable_value": "0"
+            },
+            "AbilityUnitTargetLimit": {
+                "value": "1",
+                "can_set_token_override": true
+            },
+            "AfterburnSpiritDamageReduction": {
+                "value": "0",
+                "provided_property_type": "MODIFIER_VALUE_TECH_DAMAGE_PERCENT",
+                "css_class": "tech_damage"
+            },
+            "BuildUpBulletPercentPerHit": {
+                "value": "10"
+            },
+            "BuildUpDuration": {
+                "value": "15",
+                "css_class": "duration"
+            },
+            "BurnDuration": {
+                "value": "3",
+                "css_class": "duration"
+            },
+            "ChannelMoveSpeed": {
+                "value": "50",
+                "can_set_token_override": true,
+                "css_class": "move_speed",
+                "display_units": "EDisplayUnit_MetersPerSecond"
+            },
+            "CritBuildup": {
+                "value": "16"
+            },
+            "DPS": {
+                "value": "15",
+                "css_class": "tech_damage"
+            },
+            "TechPower": {
+                "value": "0",
+                "can_set_token_override": true,
+                "provided_property_type": "MODIFIER_VALUE_TECH_POWER",
+                "disable_value": "0"
+            },
+            "TickRate": {
+                "value": "0.5"
+            },
+            "WeaponPower": {
+                "value": "0",
+                "can_set_token_override": true,
+                "provided_property_type": "MODIFIER_VALUE_WEAPON_POWER",
+                "disable_value": "0"
+            }
+        },
+        "weapon_info": {
+            "bullet_speed_curve": {
+                "spline": [
+                    {
+                        "slope_incoming": 0,
+                        "slope_outgoing": 0,
+                        "x": 0,
+                        "y": 10000
+                    },
+                    {
+                        "slope_incoming": 0,
+                        "slope_outgoing": 0,
+                        "x": 100,
+                        "y": 10000
+                    }
+                ],
+                "domain_maxs": [
+                    100,
+                    10000
+                ],
+                "domain_mins": [
+                    0,
+                    0
+                ]
+            }
+        },
+        "type": "ability",
+        "behaviours": [
+            "CITADEL_ABILITY_BEHAVIOR_CLEAVE_DISABLED",
+            "CITADEL_ABILITY_BEHAVIOR_DISPLAYS_DAMAGE_IMPACT"
+        ],
+        "description": {
+            "desc": "Your bullets build up to <span class=\"highlight\">apply a burning effect on enemies</span>. Infernus's bullets and abilities will <span class=\"highlight\">refresh</span> the duration.",
+            "quip": "Shoot enemies to set them on fire",
+            "t1_desc": "Victims deal <span class=\"highlight\">-25%</span> Spirit Damage."
+        },
+        "upgrades": [
+            {
+                "property_upgrades": [
+                    {
+                        "name": "AfterburnSpiritDamageReduction",
+                        "bonus": "-25"
+                    }
+                ]
+            },
+            {
+                "property_upgrades": [
+                    {
+                        "name": "BurnDuration",
+                        "bonus": "1"
+                    }
+                ]
+            },
+            {
+                "property_upgrades": [
+                    {
+                        "name": "DPS",
+                        "bonus": "30"
+                    }
+                ]
+            }
+        ],
+        "ability_type": "signature",
+        "videos": {
+            "webm": "https://assets.deadlock-api.com/videos/hero_abilities/abilty_inferno_afterburn.webm",
+            "mp4": "https://assets.deadlock-api.com/videos/hero_abilities/abilty_inferno_afterburn_h264.mp4"
+        }
+    }
