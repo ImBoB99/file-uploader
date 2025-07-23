@@ -67,4 +67,15 @@ const deleteFilesInFolder = async (userId, folderId) => {
   return deletedFiles;
 };
 
-module.exports = { getFolderContents, getUniqueFolderById, getFileDetailsById, deleteFilesInFolder };
+const deleteFolderById = async (userId, folderId) => {
+  const deletedFolder = await prisma.folder.findUnique({
+    where: {
+      userId: userId,
+      id: folderId,
+    }
+  });
+
+  return deletedFolder;
+};
+
+module.exports = { getFolderContents, getUniqueFolderById, getFileDetailsById, deleteFilesInFolder, deleteFolderById };
