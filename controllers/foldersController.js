@@ -359,13 +359,11 @@ const postDeleteFolder = async (req, res, next) => {
     const { folders: subfolders, files } = await db.getFolderContents(userId, folderId);
     // CASE 1 Folder has no subfolders or files
     if (subfolders.length === 0 && files.length === 0) {
-      //TODO: replace findUnique with delete
       await deleteFolderAndRemoveFromDisk(userId, folderId);
     }
 
     //CASE 2 Folder has no subfolders but has files
     if (subfolders.length === 0 && files.length > 0) {
-      //TODO: replace findMany with deleteMany
       const deletedFiles = await db.deleteFilesInFolder(userId, folderId);
       await deleteFilesAndRemoveFromDisk(deletedFiles);
       await deleteFolderAndRemoveFromDisk(userId, folderId);
@@ -376,7 +374,6 @@ const postDeleteFolder = async (req, res, next) => {
       const folderIds = await getAllNestedFolderIds(userId, folderId);
 
       for (const id of folderIds) {
-        //TODO: replace findUnique with delete
         await deleteFolderAndRemoveFromDisk(userId, id);
       }
     }
@@ -385,8 +382,6 @@ const postDeleteFolder = async (req, res, next) => {
     if (subfolders.length > 0 && files.length > 0) {
       const folderIds = await getAllNestedFolderIds(userId, folderId);
       for (const id of folderIds) {
-        //TODO: replace findUnique with delete
-        //TODO: replace findMany with deleteMany
         const currentFolderFiles = await db.deleteFilesInFolder(userId, id);
         await deleteFilesAndRemoveFromDisk(currentFolderFiles);
         await deleteFolderAndRemoveFromDisk(userId, id);

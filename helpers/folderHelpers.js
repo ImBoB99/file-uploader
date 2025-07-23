@@ -1,5 +1,7 @@
 const path = require("path");
 const db = require("../db/queries/folderQueries");
+const fs = require("node:fs");
+const fsp = fs.promises;
 
 const getFolderPathSegments = async (currentFolder, userId, getUniqueFolderByIdFn) => {
   if (currentFolder === null) return [];
@@ -28,7 +30,7 @@ async function deleteFilesAndRemoveFromDisk(files) {
     const basePath = "../public/uploads";
     const filePath = file.path;
     const absolutePath = path.join(__dirname, basePath, filePath);
-    // await fsp.unlink(absolutePath);
+    await fsp.unlink(absolutePath);
   }
 }
 
@@ -36,7 +38,7 @@ async function deleteFolderAndRemoveFromDisk(userId, folderId) {
   const folder = await db.deleteFolderById(userId, folderId);
   const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
   const { absolutePath } = buildPathsFromSegments(segments, userId);
-  // await fsp.rm(absolutePath);
+  await fsp.rmdir(absolutePath);
 }
 
 async function getAllNestedFolderIds(userId, rootFolderId) {

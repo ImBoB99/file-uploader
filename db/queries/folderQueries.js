@@ -57,7 +57,7 @@ const getFileDetailsById = async (userId, fileId) => {
 };
 
 const deleteFilesInFolder = async (userId, folderId) => {
-  const deletedFiles = await prisma.file.findMany({
+  const deletedFiles = await prisma.file.deleteMany({
     where: {
       userId: userId,
       folderId: folderId,
@@ -68,7 +68,7 @@ const deleteFilesInFolder = async (userId, folderId) => {
 };
 
 const deleteFolderById = async (userId, folderId) => {
-  const deletedFolder = await prisma.folder.findUnique({
+  const deletedFolder = await prisma.folder.delete({
     where: {
       userId: userId,
       id: folderId,
