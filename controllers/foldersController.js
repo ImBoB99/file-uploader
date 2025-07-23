@@ -214,36 +214,17 @@ const postDeleteFolder = async (req, res, next) => {
     // CASE 3. Folder has subfolders but no files
     // CASE 4. Folder has subfolders and files
 
-    const subfolders = await prisma.folder.findMany({
-      where: {
-        userId: userId,
-        parentFolderId: folderId,
-      },
-    });
-
-    const files = await prisma.file.findMany({
-      where: {
-        userId: userId,
-        folderId: folderId,
-      },
-    });
+    const { folders: subfolders, files } = await db.getFolderContents(userId, folderId);
 
     console.log(`Subfolders from DB:`, subfolders);
     console.log(`Files in folder:`, files);
 
     // CASE 1
     if (subfolders.length === 0 && files.length === 0) {
-      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
-      console.log(`Folder ${folderId} has no subfolders or files, deletion...`);
       //TODO: replace findUnique with delete
-      const deletedFolder = await prisma.folder.findUnique({
-        where: {
-          userId: userId,
-          id: folderId,
-        },
-      });
+      const deletedFolder = await db.getUniqueFolderById(userId, folderId);
 
-      const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+      const segments = await getFolderPathSegments(deletedFolder, userId, db.getUniqueFolderById);
       const { absolutePath } = buildPathsFromSegments(segments, userId);
       //TODO: await fsp.rm(absolutePath);
 
@@ -253,18 +234,8 @@ const postDeleteFolder = async (req, res, next) => {
 
     //CASE 2
     if (subfolders.length === 0 && files.length > 0) {
-      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
-      console.log(
-        `Folder ${folderId} has no subfolders but has files, deleting files before folder...`,
-      );
-
       //TODO: replace findMany with deleteMany
-      const deletedFiles = await prisma.file.findMany({
-        where: {
-          userId: userId,
-          folderId: folderId,
-        },
-      });
+      const deletedFiles = await db.deleteFilesInFolder(userId, folderId);
 
       for (const file of deletedFiles) {
         const basePath = "../public/uploads";
@@ -274,14 +245,9 @@ const postDeleteFolder = async (req, res, next) => {
         //TODO: await fsp.unlink(absolutePath); // eventually
       }
 
-      const deletedFolder = await prisma.folder.findUnique({
-        where: {
-          userId: userId,
-          id: folderId,
-        },
-      });
+      const deletedFolder = await db.getUniqueFolderById(userId, folderId);
 
-      const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
+      const segments = await getFolderPathSegments(deletedFolder, userId, db.getUniqueFolderById);
       const { absolutePath } = buildPathsFromSegments(segments, userId);
       //TODO: await fsp.rm(absolutePath);
 
@@ -291,11 +257,6 @@ const postDeleteFolder = async (req, res, next) => {
 
     // CASE 3
     if (subfolders.length > 0 && files.length === 0) {
-      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
-      console.log(
-        `Folder ${folderId} has subfolders but no files, deleting subfolders before folder...`,
-      );
-
       const foldersToDelete = new Set();
       const queue = [folderId];
 
@@ -306,12 +267,7 @@ const postDeleteFolder = async (req, res, next) => {
           console.log(id);
           foldersToDelete.add(id);
 
-          const subfolders = await prisma.folder.findMany({
-            where: {
-              userId: userId,
-              parentFolderId: id,
-            },
-          });
+          const { folders: subfolders } = await db.getFolderContents(userId, id);
 
           subfolders.forEach((subfolder) => {
             if (!foldersToDelete.has(subfolder.id)) {
@@ -328,12 +284,7 @@ const postDeleteFolder = async (req, res, next) => {
       console.log(`Reversed folder ids for deletion: `, reversedForDeletion);
       for (const id of reversedForDeletion) {
         //TODO: replace findUnique with delete
-        const folder = await prisma.folder.findUnique({
-          where: {
-            userId: userId,
-            id: id,
-          },
-        });
+        const folder = await db.getUniqueFolderById(userId, id);
 
         const segments = await getFolderPathSegments(folder, userId, db.getUniqueFolderById);
         const { absolutePath } = buildPathsFromSegments(segments, userId);
@@ -344,11 +295,6 @@ const postDeleteFolder = async (req, res, next) => {
 
     // CASE 4
     if (subfolders.length > 0 && files.length > 0) {
-      //DELETION LOGIC FOR FOLDER FROM DB AND STORAGE
-      console.log(
-        `Folder ${folderId} has subfolders and files, deleting subfolders and files before folder...`,
-      );
-
       const foldersToDelete = new Set();
       const queue = [folderId];
 
@@ -359,12 +305,7 @@ const postDeleteFolder = async (req, res, next) => {
           console.log(id);
           foldersToDelete.add(id);
 
-          const subfolders = await prisma.folder.findMany({
-            where: {
-              userId: userId,
-              parentFolderId: id,
-            },
-          });
+          const { folders: subfolders } = await db.getFolderContents(userId, id);
 
           subfolders.forEach((subfolder) => {
             if (!foldersToDelete.has(subfolder.id)) {
@@ -381,20 +322,10 @@ const postDeleteFolder = async (req, res, next) => {
       console.log(`Reversed folder ids for deletion: `, reversedForDeletion);
       for (const id of reversedForDeletion) {
         //TODO: replace findUnique with delete
-        const folder = await prisma.folder.findUnique({
-          where: {
-            userId: userId,
-            id: id,
-          },
-        });
+        const folder = await db.getUniqueFolderById(userId, id);
 
         //TODO: replace findMany with deleteMany
-        const currentFolderFiles = await prisma.file.findMany({
-          where: {
-            userId: userId,
-            folderId: id,
-          },
-        });
+        const currentFolderFiles = await db.deleteFilesInFolder(userId, id);
 
         for (const file of currentFolderFiles) {
           const basePath = "../public/uploads";

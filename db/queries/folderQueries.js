@@ -1,20 +1,21 @@
 const prisma = require("../prismaClient");
 
 const getFolderContents = async (userId, parentFolderId = null) => {
-
   const [folders, files] = await Promise.all([
     prisma.folder.findMany({
       where: {
-      userId, parentFolderId: parentFolderId,
-      }
+        userId,
+        parentFolderId: parentFolderId,
+      },
     }),
     prisma.file.findMany({
       where: {
-        userId, folderId: parentFolderId,
-      }
-    })
-  ])
-  return {folders, files};
+        userId,
+        folderId: parentFolderId,
+      },
+    }),
+  ]);
+  return { folders, files };
 };
 
 const getUniqueFolderById = async (userId, folderId) => {
@@ -37,7 +38,7 @@ const getUniqueFolderById = async (userId, folderId) => {
 };
 
 const getFileDetailsById = async (userId, fileId) => {
-    const file = await prisma.file.findUnique({
+  const file = await prisma.file.findUnique({
     where: {
       userId: userId,
       id: fileId,
@@ -53,6 +54,17 @@ const getFileDetailsById = async (userId, fileId) => {
   });
 
   return file;
-}
+};
 
-module.exports = { getFolderContents, getUniqueFolderById, getFileDetailsById};
+const deleteFilesInFolder = async (userId, folderId) => {
+  const deletedFiles = await prisma.file.findMany({
+    where: {
+      userId: userId,
+      folderId: folderId,
+    },
+  });
+
+  return deletedFiles;
+};
+
+module.exports = { getFolderContents, getUniqueFolderById, getFileDetailsById, deleteFilesInFolder };
